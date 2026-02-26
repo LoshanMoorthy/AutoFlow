@@ -1,0 +1,6 @@
+{
+  "tickMs": 100,
+  "durationSeconds": 60,
+  "spawnPerSecond": 12,
+  "csvEveryMs": 1000
+}
