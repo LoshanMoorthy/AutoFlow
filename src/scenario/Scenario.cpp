@@ -1,4 +1,4 @@
-#include "../scenario/Scenario.h"
+#include "Scenario.h"
 #include <stdexcept>
 
 ScenarioDefinition ScenarioFactory::create(ScenarioType type) {

@@ -19,17 +19,24 @@ add_executable(AutoFlow
   src/model/Station.cpp
   src/model/Pipeline.h
   src/model/Pipeline.cpp
+  src/model/OrderTracker.h
+  src/model/OrderTracker.cpp
 
   src/metrics/Metrics.h
   src/metrics/Metrics.cpp
   src/metrics/CsvReporter.h
   src/metrics/CsvReporter.cpp
+  src/metrics/MetricsServer.h
+  src/metrics/MetricsServer.cpp
 
   src/util/Random.h
   src/util/Random.cpp
   src/util/JsonConfig.h
   src/util/JsonConfig.cpp
-)
+ "src/model/OrderTracker.h" "src/model/OrderTracker.cpp" "src/scenario/Scenario.h" "src/scenario/Scenario.cpp")
+
+find_package(httplib CONFIG REQUIRED)
+target_link_libraries(AutoFlow PRIVATE httplib::httplib)
 
 if (MSVC)
   target_compile_options(AutoFlow PRIVATE /W4 /permissive-)

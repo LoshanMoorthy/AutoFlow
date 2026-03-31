@@ -2,18 +2,25 @@
 #include <vector>
 #include <algorithm>
 
-CsvReporter::CsvReporter(const std::string& path) {
-    _out.open(path, std::ios::out | std::ios::trunc);
+CsvReporter::CsvReporter(std::string path) : _path(std::move(path)) {}
+
+bool CsvReporter::tryOpen(std::ofstream& out) {
+    out.open(_path, std::ios::out | std::ios::app);
+    return out.good();
 }
 
-void CsvReporter::writeHeader() {
+void CsvReporter::writeHeader(std::ofstream& out) {
     if (_headerWritten) return;
-    _out << "sim_ms,metric_type,metric_name,value\n";
+    out << "sim_ms,metric_type,metric_name,value\n";
     _headerWritten = true;
 }
 
-void CsvReporter::writeSnapshot(std::int64_t simMs, const MetricsRegistry& metrics) {
-    writeHeader();
+bool CsvReporter::writeSnapshot(std::int64_t simMs, const MetricsRegistry& metrics) {
+    std::ofstream out;
+    if (!tryOpen(out))
+        return false; // locked or cannot open
+
+    writeHeader(out);
 
     std::vector<std::string> ckeys;
     ckeys.reserve(metrics.counters().size());
@@ -21,7 +28,7 @@ void CsvReporter::writeSnapshot(std::int64_t simMs, const MetricsRegistry& metri
     std::sort(ckeys.begin(), ckeys.end());
 
     for (auto& k : ckeys)
-        _out << simMs << ",counter," << k << "," << metrics.counter(k) << "\n";
+        out << simMs << ",counter," << k << "," << metrics.counter(k) << "\n";
 
     std::vector<std::string> gkeys;
     gkeys.reserve(metrics.gauges().size());
@@ -29,5 +36,8 @@ void CsvReporter::writeSnapshot(std::int64_t simMs, const MetricsRegistry& metri
     std::sort(gkeys.begin(), gkeys.end());
 
     for (auto& k : gkeys)
-        _out << simMs << ",gauge," << k << "," << metrics.gauge(k) << "\n";
+        out << simMs << ",gauge," << k << "," << metrics.gauge(k) << "\n";
+
+    out.flush();
+    return true;
 }

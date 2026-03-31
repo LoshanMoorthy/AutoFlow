@@ -19,15 +19,25 @@ struct StationConfig {
     int downtimeMsMin{ 2000 };
     int downtimeMsMax{ 6000 };
 
+    std::size_t queueCapacity{ 100 };
+
     StationConfig() = default;
 
-    StationConfig(std::string n, int svcMin, int svcMax, double failRate, int downMin, int downMax)
+    StationConfig(
+        std::string n,
+        int svcMin,
+        int svcMax,
+        double failRate,
+        int downMin,
+        int downMax,
+        std::size_t qCap = 100)
         : name(std::move(n))
         , serviceTimeMsMin(svcMin)
         , serviceTimeMsMax(svcMax)
         , failureRatePerSec(failRate)
         , downtimeMsMin(downMin)
-        , downtimeMsMax(downMax) {
+        , downtimeMsMax(downMax)
+        , queueCapacity(qCap) {
     }
 };
 
@@ -35,8 +45,16 @@ class Station {
 public:
     explicit Station(StationConfig cfg);
 
-    void enqueue(Item item);
+    bool enqueue(Item item);
     std::size_t queueDepth() const { return _in.size(); }
+    std::size_t queueCapacity() const { return _in.capacity(); }
+    bool canAccept() const { return _in.canPush(); }
+
+    bool isBusy() const { return _busy; }
+    bool hasCompletedItemReady(std::int64_t simMs) const;
+    Item takeCompletedItem();
+    void setBlocked(bool blocked) { _blocked = blocked; }
+    bool isBlocked() const { return _blocked; }
 
     std::optional<Item> tick(std::int64_t simMs, double dtSeconds, Random& rng, MetricsRegistry& metrics);
 
@@ -48,10 +66,14 @@ private:
     Queue<Item> _in;
 
     bool _busy{ false };
+    bool _blocked{ false };
     Item _current{};
     std::int64_t _finishAtMs{ 0 };
 
     std::int64_t _downUntilMs{ 0 };
+
+    std::int64_t _uptimeMs{ 0 };
+    std::int64_t _busyMs{ 0 };
 };
 
 #endif

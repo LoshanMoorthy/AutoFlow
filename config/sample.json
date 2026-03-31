@@ -1,6 +1,11 @@
 {
   "tickMs": 100,
-  "durationSeconds": 60,
-  "spawnPerSecond": 12,
-  "csvEveryMs": 1000
+  "durationSeconds": 120,
+  "spawnPerSecond": 1000,
+  "csvEveryMs": 1000,
+  "realTime": 1,
+  "metricsPort": 9100,
+  "ordersTarget": 100,
+  "orderItemsMin": 1,
+  "orderItemsMax": 5
 }

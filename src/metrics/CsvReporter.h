@@ -6,11 +6,14 @@
 
 class CsvReporter {
 public:
-    explicit CsvReporter(const std::string& path);
-    void writeHeader();
-    void writeSnapshot(std::int64_t simMs, const MetricsRegistry& metrics);
+    explicit CsvReporter(std::string path);
+
+    bool writeSnapshot(std::int64_t simMs, const MetricsRegistry& metrics);
 
 private:
-    std::ofstream _out;
+    std::string _path;
     bool _headerWritten{ false };
+
+    bool tryOpen(std::ofstream& out);
+    void writeHeader(std::ofstream& out);
 };
