@@ -20,6 +20,7 @@ The dashboard visualises the pipeline in real time and allows you to trace any o
 - CMake 3.20+
 - MSVC / GCC / Clang with C++20
 - vcpkg with `httplib` and `nlohmann-json`
+
 **Dashboard:**
 - Node 18+
 
