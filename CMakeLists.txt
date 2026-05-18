@@ -28,15 +28,19 @@ add_executable(AutoFlow
   src/metrics/CsvReporter.cpp
   src/metrics/MetricsServer.h
   src/metrics/MetricsServer.cpp
+  src/metrics/ItemEventLog.h
+  src/metrics/ItemEventLog.cpp
 
   src/util/Random.h
   src/util/Random.cpp
   src/util/JsonConfig.h
   src/util/JsonConfig.cpp
- "src/model/OrderTracker.h" "src/model/OrderTracker.cpp" "src/scenario/Scenario.h" "src/scenario/Scenario.cpp")
+ "src/model/OrderTracker.h" "src/model/OrderTracker.cpp" "src/scenario/Scenario.h" "src/scenario/Scenario.cpp" "src/metrics/ItemEventLog.h" "src/metrics/ItemEventLog.cpp")
 
 find_package(httplib CONFIG REQUIRED)
 target_link_libraries(AutoFlow PRIVATE httplib::httplib)
+find_package(nlohmann_json CONFIG REQUIRED)
+target_link_libraries(AutoFlow PRIVATE httplib::httplib nlohmann_json::nlohmann_json)
 
 if (MSVC)
   target_compile_options(AutoFlow PRIVATE /W4 /permissive-)

@@ -4,6 +4,7 @@
 #include "../metrics/CsvReporter.h"
 #include "../util/Random.h"
 #include "../model/OrderTracker.h"
+#include "../metrics/ItemEventLog.h"
 #include "SimClock.h"
 #include <cstdint>
 #include <string>
@@ -38,6 +39,7 @@ private:
     Random _rng;
     CsvReporter _csv;
     SimClock _clock;
+    ItemEventLog _itemLog;
 
     std::uint64_t _nextItemId{ 1 };
     std::int64_t _nextCsvAtMs{ 0 };

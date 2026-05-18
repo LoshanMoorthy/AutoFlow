@@ -1,11 +1,58 @@
 {
   "tickMs": 100,
   "durationSeconds": 120,
-  "spawnPerSecond": 1000,
+  "spawnPerSecond": 10,
   "csvEveryMs": 1000,
   "realTime": 1,
   "metricsPort": 9100,
   "ordersTarget": 100,
   "orderItemsMin": 1,
-  "orderItemsMax": 5
+  "orderItemsMax": 5,
+  "stations": [
+    {
+      "name": "Receive",
+      "serviceTimeMsMin": 200,
+      "serviceTimeMsMax": 500,
+      "failureRatePerSec": 0.0005,
+      "downtimeMsMin": 2000,
+      "downtimeMsMax": 5000,
+      "queueCapacity": 50
+    },
+    {
+      "name": "Decant",
+      "serviceTimeMsMin": 300,
+      "serviceTimeMsMax": 700,
+      "failureRatePerSec": 0.0008,
+      "downtimeMsMin": 2000,
+      "downtimeMsMax": 6000,
+      "queueCapacity": 30
+    },
+    {
+      "name": "Pick",
+      "serviceTimeMsMin": 250,
+      "serviceTimeMsMax": 600,
+      "failureRatePerSec": 0.0012,
+      "downtimeMsMin": 1500,
+      "downtimeMsMax": 4500,
+      "queueCapacity": 20
+    },
+    {
+      "name": "Pack",
+      "serviceTimeMsMin": 300,
+      "serviceTimeMsMax": 800,
+      "failureRatePerSec": 0.0007,
+      "downtimeMsMin": 2000,
+      "downtimeMsMax": 5000,
+      "queueCapacity": 15
+    },
+    {
+      "name": "Dispatch",
+      "serviceTimeMsMin": 200,
+      "serviceTimeMsMax": 500,
+      "failureRatePerSec": 0.0004,
+      "downtimeMsMin": 2000,
+      "downtimeMsMax": 5000,
+      "queueCapacity": 15
+    }
+  ]
 }

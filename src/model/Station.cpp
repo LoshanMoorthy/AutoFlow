@@ -52,6 +52,7 @@ std::optional<Item> Station::tick(std::int64_t simMs, double dtSeconds, Random& 
 
     if (!_busy && !_in.empty()) {
         _current = _in.pop();
+        _current.enteredStationMs = simMs;
         _busy = true;
         _blocked = false;
 

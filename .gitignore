@@ -361,3 +361,12 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# C++ build output
+out/
+*.exe
+*.csv
+
+# React / Node
+dashboard/node_modules/
+dashboard/.vite/

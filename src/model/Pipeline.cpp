@@ -8,11 +8,13 @@ Station& Pipeline::station(std::size_t idx) {
     return *_stations.at(idx);
 }
 
-void Pipeline::pushToFirst(Item item) {
+void Pipeline::pushToFirst(Item item, MetricsRegistry& metrics) {
     if (_stations.empty())
         return;
 
-    if (!_stations.front()->enqueue(std::move(item))) { }
+    if (!_stations.front()->enqueue(std::move(item))) {
+        metrics.incCounter("items_dropped_total");
+    }
 }
 
 std::int64_t Pipeline::itemsInSystem() const {
@@ -25,7 +27,7 @@ std::int64_t Pipeline::itemsInSystem() const {
     return sum;
 }
 
-std::int64_t Pipeline::tick(std::int64_t simMs, double dtSeconds, Random& rng, MetricsRegistry& metrics, OrderTracker& orderTracker) {
+std::int64_t Pipeline::tick(std::int64_t simMs, double dtSeconds, Random& rng, MetricsRegistry& metrics, OrderTracker& orderTracker, ItemEventLog& itemLog) {
     std::int64_t completed = 0;
 
     for (std::size_t i = 0; i < _stations.size(); ++i) {
@@ -36,6 +38,7 @@ std::int64_t Pipeline::tick(std::int64_t simMs, double dtSeconds, Random& rng, M
         if (i + 1 < _stations.size()) {
             if (_stations[i + 1]->canAccept()) {
                 Item moved = _stations[i]->takeCompletedItem();
+                itemLog.record(moved.id, moved.orderId, _stations[i]->name(), moved.enteredStationMs, simMs);
                 _stations[i + 1]->enqueue(std::move(moved));
                 _stations[i]->setBlocked(false);
             }
@@ -46,6 +49,7 @@ std::int64_t Pipeline::tick(std::int64_t simMs, double dtSeconds, Random& rng, M
         }
         else {
             Item finished = _stations[i]->takeCompletedItem();
+            itemLog.record(finished.id, finished.orderId, _stations[i]->name(), finished.enteredStationMs, simMs);
             completed++;
             metrics.incCounter("items_completed_total");
 

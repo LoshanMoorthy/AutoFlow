@@ -8,7 +8,8 @@ SimulationEngine::SimulationEngine(EngineConfig cfg, Pipeline pipeline)
     : _cfg(std::move(cfg))
     , _pipeline(std::move(pipeline))
     , _rng(_cfg.rngSeed)
-    , _csv(_cfg.csvPath) {
+    , _csv(_cfg.csvPath)
+    , _itemLog("autoflow_items.csv") {
     _nextCsvAtMs = 0;
 }
 
@@ -41,7 +42,7 @@ void SimulationEngine::spawnItems(double dtSeconds) {
             it.createdMs = _clock.simMs;
             it.enteredPipelineMs = _clock.simMs;
 
-            _pipeline.pushToFirst(std::move(it));
+            _pipeline.pushToFirst(std::move(it), _metrics);
             _metrics.incCounter("items_created_total");
         }
     }
@@ -75,7 +76,7 @@ void SimulationEngine::run() {
     while (_clock.simMs <= endMs) {
         spawnItems(dtSeconds);
 
-        _pipeline.tick(_clock.simMs, dtSeconds, _rng, _metrics, _orderTracker);
+        _pipeline.tick(_clock.simMs, dtSeconds, _rng, _metrics, _orderTracker, _itemLog);
 
         _metrics.setGauge("items_in_system", static_cast<double>(_pipeline.itemsInSystem()));
 
